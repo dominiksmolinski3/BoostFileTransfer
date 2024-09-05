@@ -64,7 +64,7 @@ eg.
 or
 
 ./client.exe "C:\Users\x\Desktop\file.txt" 12.345.678.123 12345
-'''
+```
 
 Client will connect to this server, send file and await for confirmation for server and then close the communication.
 
