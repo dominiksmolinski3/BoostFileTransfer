@@ -13,27 +13,27 @@ void receive_file(tcp::socket& socket) {
     std::ofstream outfile;
 
     try {
-        // Read the filename
+        // read filename
         boost::asio::read_until(socket, buffer, "\n");
         std::string header;
         std::getline(stream, header);
         std::string filename = header.substr(9);  // Skip "FILENAME:"
 
-        // Read the file size
+        // read file size
         boost::asio::read_until(socket, buffer, "\n");
         std::getline(stream, header);
         std::size_t file_size = std::stoul(header.substr(5));  // Skip "SIZE:"
 
         std::cout << "Expecting file of size: " << file_size << " bytes" << std::endl;
 
-        // Open the output file for writing
+        // open output file for writing
         outfile.open(filename, std::ios::binary);
         if (!outfile.is_open()) {
             std::cerr << "Failed to open file for writing: " << filename << std::endl;
             return;
         }
 
-        // Receive the file content
+        // receive file content
         std::size_t total_bytes_read = 0;
         char file_buffer[1024];
 
@@ -44,7 +44,7 @@ void receive_file(tcp::socket& socket) {
             std::size_t bytes_read = socket.read_some(boost::asio::buffer(file_buffer, bytes_to_read), error);
 
             if (error == boost::asio::error::eof) {
-                // Client closed the connection unexpectedly
+                // client closed the connection unexpectedly
                 std::cerr << "Client closed the connection unexpectedly." << std::endl;
                 break;
             } else if (error) {
@@ -60,7 +60,7 @@ void receive_file(tcp::socket& socket) {
 
         std::cout << "File received successfully: " << filename << std::endl;
 
-        // Send acknowledgment to the client
+        // send acknowledgment to the client
         std::string acknowledgment = "ACK: File received successfully\n";
         boost::asio::write(socket, boost::asio::buffer(acknowledgment));
 
@@ -70,7 +70,7 @@ void receive_file(tcp::socket& socket) {
         std::cerr << "Exception: " << e.what() << std::endl;
     }
 
-    // Ensure file is closed
+    // ensure file is closed
     if (outfile.is_open()) {
         outfile.close();
     }

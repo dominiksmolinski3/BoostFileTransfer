@@ -14,7 +14,7 @@ void send_file(const std::string &filename, const std::string &server_address, c
     tcp::resolver::results_type endpoints = resolver.resolve(server_address, server_port);
     tcp::socket socket(io_context);
 
-    // Connect to the server with retries
+    // connect to the server with retries
     bool connected = false;
     for (int attempt = 0; attempt < 5 && !connected; ++attempt) {
         try {
@@ -31,26 +31,26 @@ void send_file(const std::string &filename, const std::string &server_address, c
         return;
     }
 
-    // Open the file for reading
+    // open the file for reading
     std::ifstream file(filename, std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
         std::cerr << "Could not open file: " << filename << std::endl;
         return;
     }
 
-    // Get the file size
+    // get the file size
     std::streamsize file_size = file.tellg();
     file.seekg(0, std::ios::beg);
 
-    // Send the filename
+    // send the filename
     std::string header = "FILENAME:" + boost::filesystem::path(filename).filename().string() + "\n";
     boost::asio::write(socket, boost::asio::buffer(header));
 
-    // Send the file size
+    // send the file size
     std::string size_header = "SIZE:" + std::to_string(file_size) + "\n";
     boost::asio::write(socket, boost::asio::buffer(size_header));
 
-    // Send the file content in chunks
+    // send the file content in chunks
     char buffer[1024];
     while (file.read(buffer, sizeof(buffer)) || file.gcount() > 0) {
         boost::asio::write(socket, boost::asio::buffer(buffer, file.gcount()));
@@ -59,7 +59,7 @@ void send_file(const std::string &filename, const std::string &server_address, c
     socket.shutdown(tcp::socket::shutdown_send);
     std::cout << "File transfer complete! Waiting for server acknowledgment..." << std::endl;
 
-    // Wait for acknowledgment from the server
+    // wait for acknowledgment from the server
     char ack_buffer[1024];
     boost::system::error_code error;
     std::size_t ack_length = socket.read_some(boost::asio::buffer(ack_buffer), error);

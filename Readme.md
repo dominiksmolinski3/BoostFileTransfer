@@ -1,6 +1,6 @@
 # Cross-Platform File Transfer
 
-This project implements a simple **client-server** application in C++ using **Boost.Asio** for network communication.
+This project implements a **client-server** application in C++ using **Boost.Asio** for network communication.
 The client transfers a file over the network to the server, which receives the file and stores it locally.
 
 ## Features
@@ -62,4 +62,17 @@ eg.
 ./client.exe "C:\Users\x\Desktop\Capture.png" localhost 12345
 
 or
+
 ./client.exe "C:\Users\x\Desktop\file.txt" 12.345.678.123 12345
+'''
+
+Client will connect to this server, send file and await for confirmation for server and then close the communication.
+
+## Notes
+* Localhost will work in most cases, for sending files via network you should have some basic understanding of networking.
+
+* Ensure the server is running before executing the client.
+
+* The client and server must use the same port for communication.
+
+* If running the client and server on different machines, use the server’s IP address in the client command instead of localhost.
